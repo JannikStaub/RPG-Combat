@@ -32,7 +32,7 @@ public class UserInterface {
 
 	public void render(final SpriteBatch spriteBatch) {
 		for (int c = 0; c < uiComponents.size(); c++) {
-			uiComponents.get(c).render(spriteBatch, 0, 0);
+			uiComponents.get(c).renderWithChilds(spriteBatch, 0, 0);
 		}
 	}
 
@@ -43,7 +43,8 @@ public class UserInterface {
 			if (component.getWidgetName().equals(widgetname)) {
 				return (T) component;
 			}
-			final AbstractUIComponent childWidget = component.findWidget(widgetname);
+			final AbstractUIComponent childWidget = component
+					.findWidget(widgetname);
 			if (childWidget != null) {
 				return (T) childWidget;
 			}
@@ -51,13 +52,16 @@ public class UserInterface {
 		return null;
 	}
 
-	public boolean handleTouch(final int x, final int y, final boolean touch, final boolean pressed) {
+	public boolean handleTouch(final int x, final int y, final boolean touch,
+			final boolean pressed) {
 
 		AbstractUIComponent currentMouseOverComponent = null;
 		for (int uic = uiComponents.size() - 1; uic >= 0; uic--) {
 			final AbstractUIComponent component = uiComponents.get(uic);
 			if (!component.isHidden()) {
-				if (component.getX() < x && component.getY() < y && component.getX() + component.getWidth() > x && component.getY() + component.getHeight() > y) {
+				if (component.getX() < x && component.getY() < y
+						&& component.getX() + component.getWidth() > x
+						&& component.getY() + component.getHeight() > y) {
 					currentMouseOverComponent = component.updateMouseOver(x, y);
 					if (currentMouseOverComponent != null) {
 						break;
@@ -67,8 +71,11 @@ public class UserInterface {
 		}
 		if (currentMouseOverComponent != null) {
 			if (touch && !pressed) {
-				if (actionListener.containsKey(currentMouseOverComponent.getWidgetName())) {
-					actionListener.get(currentMouseOverComponent.getWidgetName()).go(currentMouseOverComponent);
+				if (actionListener.containsKey(currentMouseOverComponent
+						.getWidgetName())) {
+					actionListener.get(
+							currentMouseOverComponent.getWidgetName()).go(
+							currentMouseOverComponent);
 					return true;
 				}
 			}
