@@ -19,6 +19,8 @@ import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationStep;
 import com.kingsaiya.framework.tools.FileTool;
 import com.kingsaiya.framework.tools.RenderTool;
 import com.kingsaiya.framework.tools.TimeTool;
+import com.kingsaiya.framework.userinterface.core.AbstractUIComponent;
+import com.kingsaiya.framework.userinterface.core.UIAction;
 import com.kingsaiya.framework.userinterface.core.UserInterface;
 import com.kingsaiya.game.entitysystem.components.CombatComponent;
 import com.kingsaiya.game.entitysystem.components.MovementComponent;
@@ -30,6 +32,8 @@ import com.kingsaiya.game.input.MyInputProcessor;
 import com.kingsaiya.game.map.GameMap;
 import com.kingsaiya.game.userinterface.UIActionSlot;
 import com.kingsaiya.game.userinterface.UIHudPlayerStatusPanel;
+import com.kingsaiya.game.userinterface.UIInventoryButton;
+import com.kingsaiya.game.userinterface.UIInventoryWindow;
 import com.kingsaiya.game.userinterface.UIWindow;
 
 public class RpgCombatGame extends ApplicationAdapter {
@@ -106,10 +110,21 @@ public class RpgCombatGame extends ApplicationAdapter {
 		player_status_panel.setUnit(player);
 		userInterface.addUIComponent(player_status_panel);
 
-		final UIHudPlayerStatusPanel focus_target_status_panel = new UIHudPlayerStatusPanel("hud_focus_target_status_panel", Gdx.graphics.getWidth() - 170, 0,
-				160, 60);
+		final UIHudPlayerStatusPanel focus_target_status_panel = new UIHudPlayerStatusPanel("hud_focus_target_status_panel",
+				Gdx.graphics.getWidth() - 170, 0, 160, 60);
 		focus_target_status_panel.setUnit(enemy);
 		userInterface.addUIComponent(focus_target_status_panel);
+
+		final UIInventoryButton inventory_button = new UIInventoryButton("Inventory", Gdx.graphics.getWidth() - 74,
+				Gdx.graphics.getHeight() - 74, 64, 64);
+		userInterface.addUIComponent(inventory_button);
+		userInterface.addActionListener("Inventory", new UIAction() {
+
+			@Override
+			public void go(AbstractUIComponent widget) {
+				userInterface.addUIComponent(new UIInventoryWindow("Inventory Window", 100, 100, 400, 300, userInterface));
+			}
+		});
 	}
 
 	@Override

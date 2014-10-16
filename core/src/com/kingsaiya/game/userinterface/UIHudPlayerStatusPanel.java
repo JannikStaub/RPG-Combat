@@ -1,5 +1,6 @@
 package com.kingsaiya.game.userinterface;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.tools.RenderTool;
@@ -36,12 +37,14 @@ public class UIHudPlayerStatusPanel extends AbstractUIComponent {
 	@Override
 	public void render(SpriteBatch spriteBatch, float offsetX, float offsetY) {
 		spriteBatch.setColor(1, 1, 1, 0.8f);
-		RenderTool.renderNinePatch(RenderTool.getUITexture(), 32, 32, 32, 32, 9, 9, 9, 9, x + offsetX, y + offsetY + 1, 50, 19, spriteBatch);
-		RenderTool.renderNinePatch(RenderTool.getUITexture(), 32, 32, 32, 32, 9, 9, 9, 9, x + offsetX, y + offsetY + 21, 50, 19, spriteBatch);
+		RenderTool
+				.renderNinePatch(RenderTool.getUITexture(), 32, 32, 32, 32, 9, 9, 9, 9, x + offsetX, y + offsetY + 1, 50, 19, spriteBatch);
+		RenderTool.renderNinePatch(RenderTool.getUITexture(), 32, 32, 32, 32, 9, 9, 9, 9, x + offsetX, y + offsetY + 21, 50, 19,
+				spriteBatch);
 		spriteBatch.setColor(1, 1, 1, 1f);
 
-		RenderTool.renderTextVerticalCentered("HP:", x + offsetX + 5, y + offsetY, 1f, 20, spriteBatch);
-		RenderTool.renderTextVerticalCentered("MP:", x + offsetX + 5, y + offsetY + 20, 1f, 20, spriteBatch);
+		RenderTool.renderTextVerticalCentered("HP:", x + offsetX + 5, y + offsetY, 1f, Color.WHITE, 20, spriteBatch);
+		RenderTool.renderTextVerticalCentered("MP:", x + offsetX + 5, y + offsetY + 20, 1f, Color.WHITE, 20, spriteBatch);
 
 		healthProgressBar.setMaxProgress(unitHealthComponent.getMaxHitpoints());
 		healthProgressBar.setProgress(unitHealthComponent.getCurrentHitpoints());
