@@ -2,17 +2,20 @@ package com.kingsaiya.framework.tools;
 
 import java.io.Externalizable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationStep;
 
 public class FileTool {
-	public static final String ABSOLUTE_ANIMATIONS_PATH = "C:/workspaces/GDX Projects/Pixelmen/desktop/animations/";
+	public static final String ABSOLUTE_ANIMATIONS_PATH = "animations/";
 
 	public static <T extends Externalizable> void saveExternalExternalizableFile(final T file, final String fileName) {
 		FileOutputStream fout = null;
@@ -42,10 +45,10 @@ public class FileTool {
 	}
 
 	public static <T extends Externalizable> T loadExternalExtenalizableFile(final String fileName, final Class<? extends T> fileClass) {
-		return loadExternalExtenalizableFile(Gdx.files.external(fileName).file(), fileClass);
+		return loadExternalExtenalizableFile(Gdx.files.internal(fileName), fileClass);
 	}
 
-	public static <T extends Externalizable> T loadExternalExtenalizableFile(final File F, final Class<? extends T> fileClass) {
+	public static <T extends Externalizable> T loadExternalExtenalizableFile(final FileHandle F, final Class<? extends T> fileClass) {
 		T file;
 		try {
 			file = fileClass.newInstance();
@@ -57,12 +60,12 @@ public class FileTool {
 			return null;
 		}
 
-		FileInputStream fin = null;
-		ObjectInputStream inputStream = null;
+		InputStream fin = null;
+		HackedObjectInputStream inputStream = null;
 		try {
 			try {
-				fin = new FileInputStream(F);
-				inputStream = new ObjectInputStream(fin);
+				fin = F.read();
+				inputStream = new HackedObjectInputStream(fin);
 				file.readExternal(inputStream);
 			} catch (final FileNotFoundException e) {
 				e.printStackTrace();
@@ -73,6 +76,7 @@ public class FileTool {
 					inputStream.close();
 				}
 				if (fin != null) {
+
 					fin.close();
 				}
 			}
@@ -82,4 +86,20 @@ public class FileTool {
 		return file;
 	}
 
+	public static class HackedObjectInputStream extends ObjectInputStream {
+
+		public HackedObjectInputStream(InputStream in) throws IOException {
+			super(in);
+		}
+
+		@Override
+		protected ObjectStreamClass readClassDescriptor() throws IOException, ClassNotFoundException {
+			ObjectStreamClass resultClassDescriptor = super.readClassDescriptor();
+
+			if (resultClassDescriptor.getName().equals("com.pixelmen.game.animation.SkeletonAnimationStep"))
+				resultClassDescriptor = ObjectStreamClass.lookup(SkeletonAnimationStep.class);
+
+			return resultClassDescriptor;
+		}
+	}
 }

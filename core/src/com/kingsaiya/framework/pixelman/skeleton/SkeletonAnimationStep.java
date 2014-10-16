@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.kingsaiya.framework.animation.AnimationStep;
+import com.pixelmen.game.animation.AnimationStep;
 
 public class SkeletonAnimationStep extends AnimationStep implements Externalizable {
 	private static final long serialVersionUID = -403250971215465050L;

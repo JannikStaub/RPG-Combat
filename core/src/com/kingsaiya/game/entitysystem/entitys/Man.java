@@ -11,6 +11,7 @@ import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationHandler;
 import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationStep;
 import com.kingsaiya.game.entitysystem.components.AnimationComponent;
+import com.kingsaiya.game.entitysystem.components.CombatComponent;
 import com.kingsaiya.game.entitysystem.components.FactionComponent;
 import com.kingsaiya.game.entitysystem.components.HealthComponent;
 import com.kingsaiya.game.entitysystem.components.MovementComponent;
@@ -23,6 +24,7 @@ public class Man extends Entity {
 	private HealthComponent healthComponent;
 	private MovementComponent movementComponent;
 	private FactionComponent factionComponent;
+	private CombatComponent combatComponent;
 
 	private Texture texture;
 	private Animation<SkeletonAnimationStep> animation;
@@ -49,6 +51,8 @@ public class Man extends Entity {
 		components.put(MovementComponent.class, movementComponent);
 		factionComponent = new FactionComponent();
 		components.put(FactionComponent.class, factionComponent);
+		combatComponent = new CombatComponent();
+		components.put(CombatComponent.class, combatComponent);
 	}
 
 	public MovementComponent getMovementComponent() {

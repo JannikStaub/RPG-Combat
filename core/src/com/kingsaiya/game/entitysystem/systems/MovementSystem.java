@@ -2,22 +2,23 @@ package com.kingsaiya.game.entitysystem.systems;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.entitysystem.eventsystem.AbstractEventListener;
 import com.kingsaiya.framework.entitysystem.eventsystem.EntityEventSystem;
 import com.kingsaiya.framework.entitysystem.system.AbstractEntitySystem;
-import com.kingsaiya.game.combat.dummy.FastMath;
-import com.kingsaiya.game.combat.dummy.TimeTool;
-import com.kingsaiya.game.combat.dummy.Vector2f;
+import com.kingsaiya.framework.tools.FastMath;
+import com.kingsaiya.framework.tools.Vector2f;
 import com.kingsaiya.game.entitysystem.components.MovementComponent;
-import com.kingsaiya.game.entitysystem.events.MovementEventAtTargetPosition;
-import com.kingsaiya.game.entitysystem.events.MovementEventDirectControl;
-import com.kingsaiya.game.entitysystem.events.MovementEventNewTargetPosition;
+import com.kingsaiya.game.entitysystem.events.movement.MovementEventAtTargetPosition;
+import com.kingsaiya.game.entitysystem.events.movement.MovementEventDirectControl;
+import com.kingsaiya.game.entitysystem.events.movement.MovementEventNewTargetPosition;
+import com.kingsaiya.game.map.GameMap;
 
 public class MovementSystem extends AbstractEntitySystem {
 
 	private ArrayList<Entity> entitys = new ArrayList<Entity>();
-
+	private GameMap gameMap;
 	private final Vector2f cachedVector = new Vector2f();
 
 	public MovementSystem(final EntityEventSystem eventSystem) {
@@ -43,55 +44,68 @@ public class MovementSystem extends AbstractEntitySystem {
 					if (movementX == 0 && movementY == 0) {
 						System.out.println("no movement");
 					}
-					// eventSystem.dropEvent(new
-					// MovementEventNewTargetPosition(event.getEntity(),
-					// movementComponent.getPosition().x + movementX,
-					// movementComponent.getPosition().y + movementY));
 				}
 			}
 		});
 
 		eventSystem.registerListener(new AbstractEventListener<MovementEventDirectControl>() {
+
 			@Override
 			protected void onEvent(MovementEventDirectControl event) {
 				final MovementComponent movementComponent = event.getEntity().getEntityComponent(MovementComponent.class);
-				if (movementComponent != null) {
 
-					double lookDirectionChange = event.getLookDirectionChange();
-					double turnDirectionChange = event.getTurnDirectionChange();
-					double forwardMotion = event.getForwardMotion();
-					double strafeMotion = event.getStrafeMotion();
+				float xMovement = 0;
+				float yMovement = 0;
 
-					// look around TODO
-					movementComponent.getDirection().rotateAroundOrigin((float) (lookDirectionChange * 0.01), true);
+				if (event.isWalkUp()) {
+					yMovement = 1;
+				}
+				if (event.isWalkDown()) {
+					yMovement = -1;
+				}
+				if (event.isWalkLeft()) {
+					xMovement = -1;
+				}
+				if (event.isWalkRight()) {
+					xMovement = 1;
+				}
 
-					// turn character
-					movementComponent.getDirection().rotateAroundOrigin((float) (turnDirectionChange * 0.01), true);
+				if (xMovement != 0 || yMovement != 0) {
+					movementComponent.getDirection().set(xMovement, yMovement);
+				}
 
-					if (!movementComponent.isMovementBlocked(TimeTool.getGameTick())) {
-						float movementEndX = movementComponent.getPosition().x;
-						float movementEndY = movementComponent.getPosition().y;
+				float targetX = movementComponent.getPosition().x + xMovement * movementComponent.getSpeed() * Gdx.graphics.getDeltaTime();
+				float targetY = movementComponent.getPosition().y + yMovement * movementComponent.getSpeed() * Gdx.graphics.getDeltaTime();
+				int currentMapFieldX = (int) movementComponent.getPosition().x;
+				int currentMapFieldY = (int) movementComponent.getPosition().y;
+				int targetMapFieldX = (int) targetX;
+				int targetMapFieldY = (int) targetY;
 
-						// move forward
-						if (Math.abs(forwardMotion) > 0.1) {
-							float forwardSpeed = (float) forwardMotion * (forwardMotion < 0 ? 0.1f : 0.3f);
-							movementEndX += movementComponent.getDirection().x * forwardSpeed;
-							movementEndY += movementComponent.getDirection().y * forwardSpeed;
+				// check collision when crossing mapfields
+				if (gameMap != null) {
+					if (currentMapFieldX < targetMapFieldX) {
+						if (gameMap.getMapField(targetMapFieldX, currentMapFieldY).isCollision()) {
+							targetX = targetMapFieldX - 0.01f;
+							targetMapFieldX = currentMapFieldX;
 						}
-
-						// strafe
-						if (Math.abs(strafeMotion) > 0.1) {
-							float strafeSpeed = (float) strafeMotion * 0.1f;
-							movementEndX += movementComponent.getDirection().y * strafeSpeed;
-							movementEndY -= movementComponent.getDirection().x * strafeSpeed;
+					} else if (currentMapFieldX > targetMapFieldX) {
+						if (gameMap.getMapField(targetMapFieldX, currentMapFieldY).isCollision()) {
+							targetX = currentMapFieldX;
+							targetMapFieldX = currentMapFieldX;
 						}
-
-						movementEndX = Math.max(-90, Math.min(movementEndX, 90));
-						movementEndY = Math.max(-70, Math.min(movementEndY, 70));
-						movementComponent.setPosition(movementEndX, movementEndY);
-						movementComponent.setTargetPosition(movementEndX, movementEndY);
+					}
+					if (currentMapFieldY < targetMapFieldY) {
+						if (gameMap.getMapField(targetMapFieldX, targetMapFieldY).isCollision()) {
+							targetY = targetMapFieldY - 0.01f;
+						}
+					} else if (currentMapFieldY > targetMapFieldY) {
+						if (gameMap.getMapField(targetMapFieldX, targetMapFieldY).isCollision()) {
+							targetY = currentMapFieldY;
+						}
 					}
 				}
+
+				movementComponent.getPosition().set(targetX, targetY);
 			}
 		});
 	}
@@ -134,5 +148,9 @@ public class MovementSystem extends AbstractEntitySystem {
 				}
 			}
 		}
+	}
+
+	public void setGameMap(GameMap gameMap) {
+		this.gameMap = gameMap;
 	}
 }

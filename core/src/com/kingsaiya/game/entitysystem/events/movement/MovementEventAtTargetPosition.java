@@ -1,4 +1,4 @@
-package com.kingsaiya.game.entitysystem.events;
+package com.kingsaiya.game.entitysystem.events.movement;
 
 import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.entitysystem.eventsystem.EntityEvent;

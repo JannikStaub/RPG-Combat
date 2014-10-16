@@ -1,6 +1,7 @@
 package com.kingsaiya.game.combat.skill.effect;
 
-import com.kingsaiya.game.combat.unit.Unit;
+import com.kingsaiya.framework.entitysystem.entity.Entity;
+import com.kingsaiya.game.entitysystem.components.HealthComponent;
 
 public class SkillEffectCauseDamage implements ISkillEffectType {
 
@@ -11,8 +12,11 @@ public class SkillEffectCauseDamage implements ISkillEffectType {
 	}
 
 	@Override
-	public void execute(Unit controlledUnit, Unit focusTarget) {
-		focusTarget.adjustCurrentHitpoints(-damage);
+	public void execute(Entity controlledUnit, Entity focusTarget) {
+		HealthComponent healthComponent = focusTarget.getEntityComponent(HealthComponent.class);
+		if (healthComponent != null) {
+			healthComponent.adjustCurrentHitpoints(-damage);
+		}
 	}
 
 }

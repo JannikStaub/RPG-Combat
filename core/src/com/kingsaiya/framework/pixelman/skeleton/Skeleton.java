@@ -112,7 +112,7 @@ public class Skeleton {
 		// draw stuff
 		spriteBatch.begin();
 		int zIndex = -5;
-		while (renderBoneWithChilds(rootNode, position.x, position.y, zIndex, spriteBatch)) {
+		while (renderBoneWithChilds(rootNode, position.x * 32, position.y * 32, zIndex, 3, spriteBatch)) {
 			zIndex++;
 		}
 		spriteBatch.end();
@@ -120,7 +120,7 @@ public class Skeleton {
 		if (drawBones) {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.GREEN);
-			drawBoneWithChilds(rootNode, position.x, position.y, shapeRenderer);
+			drawBoneWithChilds(rootNode, position.x * 32, position.y * 32, shapeRenderer);
 			shapeRenderer.end();
 		}
 	}
@@ -141,7 +141,7 @@ public class Skeleton {
 
 	}
 
-	private void renderBone(final Bone bone, final float relativeX, final float relativeY, final SpriteBatch spriteBatch) {
+	private void renderBone(final Bone bone, final float relativeX, final float relativeY, final float scale, final SpriteBatch spriteBatch) {
 
 		final BoneTextureMapping textureMapping = bone.getTextureMapping() >= 0 ? textureMappings[bone.getTextureMapping()] : null;
 		if (textureMapping != null) {
@@ -150,22 +150,24 @@ public class Skeleton {
 			final float yScale = bone.getRoot().len() / bone.getMaxLength();
 			final float rotation = bone.getRoot().angle() + 90 + textureMapping.getRotation();
 
-			spriteBatch.draw(bone.getTexture(), root.x + relativeX - textureMapping.getRootX(), root.y + relativeY - textureMapping.getRootY(),
-					textureMapping.getRootX(), textureMapping.getRootY(), textureMapping.getTextureRegion().width, textureMapping.getTextureRegion().height,
-					1f, yScale, rotation, (int) textureRegion.x, (int) textureRegion.y, (int) textureRegion.width, (int) textureRegion.height,
-					bone.isTextureXflipped(), false);
+			spriteBatch.draw(bone.getTexture(), relativeX + (root.x - textureMapping.getRootX()) * scale, relativeY + (root.y - textureMapping.getRootY())
+					* scale, textureMapping.getRootX() * scale, textureMapping.getRootY() * scale, textureMapping.getTextureRegion().width * scale,
+					textureMapping.getTextureRegion().height * scale, 1f, yScale, rotation, (int) textureRegion.x, (int) textureRegion.y,
+					(int) textureRegion.width, (int) textureRegion.height, bone.isTextureXflipped(), false);
 		}
 	}
 
-	private boolean renderBoneWithChilds(final Bone bone, final float relativeX, final float relativeY, final int zIndex, final SpriteBatch spriteBatch) {
+	private boolean renderBoneWithChilds(final Bone bone, final float relativeX, final float relativeY, final int zIndex, final float scale,
+			final SpriteBatch spriteBatch) {
 		boolean hasMoreZLayers = bone.getZ() > zIndex;
 		if (bone.getZ() == zIndex) {
-			renderBone(bone, relativeX, relativeY, spriteBatch);
+			renderBone(bone, relativeX, relativeY, scale, spriteBatch);
 		}
 
 		final ArrayList<Bone> childBones = bone.getChildBones();
 		for (final Bone childBone : childBones) {
-			hasMoreZLayers |= renderBoneWithChilds(childBone, bone.getRoot().x + relativeX, bone.getRoot().y + relativeY, zIndex, spriteBatch);
+			hasMoreZLayers |= renderBoneWithChilds(childBone, bone.getRoot().x * scale + relativeX, bone.getRoot().y * scale + relativeY, zIndex, scale,
+					spriteBatch);
 		}
 		return hasMoreZLayers;
 	}

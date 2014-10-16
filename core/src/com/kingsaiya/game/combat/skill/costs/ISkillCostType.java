@@ -1,11 +1,11 @@
 package com.kingsaiya.game.combat.skill.costs;
 
-import com.kingsaiya.game.combat.unit.Unit;
+import com.kingsaiya.framework.entitysystem.entity.Entity;
 
 public interface ISkillCostType {
 
-	public boolean isPossible(Unit controlledUnit, Unit focusTarget);
+	public boolean isPossible(Entity controlledUnit, Entity focusTarget);
 
-	public void consume(Unit controlledUnit, Unit focusTarget);
+	public void consume(Entity controlledUnit, Entity focusTarget);
 
 }

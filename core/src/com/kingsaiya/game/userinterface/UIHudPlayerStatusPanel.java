@@ -1,16 +1,18 @@
 package com.kingsaiya.game.userinterface;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.tools.RenderTool;
 import com.kingsaiya.framework.userinterface.core.AbstractUIComponent;
-import com.kingsaiya.game.combat.unit.Unit;
+import com.kingsaiya.game.entitysystem.components.HealthComponent;
 import com.kingsaiya.game.userinterface.UIProgressbar.ProgressbarType;
 
 public class UIHudPlayerStatusPanel extends AbstractUIComponent {
 
 	private UIProgressbar healthProgressBar;
 	private UIProgressbar manaProgressBar;
-	private Unit unit;
+	private Entity unit;
+	private HealthComponent unitHealthComponent;
 
 	public UIHudPlayerStatusPanel(String widgetname, float x, float y, float width, float height) {
 		super(widgetname, x, y, width, height);
@@ -22,8 +24,13 @@ public class UIHudPlayerStatusPanel extends AbstractUIComponent {
 		addChildComponent(manaProgressBar);
 	}
 
-	public void setUnit(final Unit unit) {
+	public void setUnit(final Entity unit) {
 		this.unit = unit;
+		if (unit != null) {
+			unitHealthComponent = unit.getEntityComponent(HealthComponent.class);
+		} else {
+			unitHealthComponent = null;
+		}
 	}
 
 	@Override
@@ -36,13 +43,13 @@ public class UIHudPlayerStatusPanel extends AbstractUIComponent {
 		RenderTool.renderTextVerticalCentered("HP:", x + offsetX + 5, y + offsetY, 1f, 20, spriteBatch);
 		RenderTool.renderTextVerticalCentered("MP:", x + offsetX + 5, y + offsetY + 20, 1f, 20, spriteBatch);
 
-		healthProgressBar.setMaxProgress(unit.getMaxHitpoints());
-		healthProgressBar.setProgress(unit.getCurrentHitpoints());
-		healthProgressBar.setCaption(unit.getCurrentHitpoints() + " / " + unit.getMaxHitpoints());
+		healthProgressBar.setMaxProgress(unitHealthComponent.getMaxHitpoints());
+		healthProgressBar.setProgress(unitHealthComponent.getCurrentHitpoints());
+		healthProgressBar.setCaption(unitHealthComponent.getCurrentHitpoints() + " / " + unitHealthComponent.getMaxHitpoints());
 
-		manaProgressBar.setMaxProgress(unit.getMaxMana());
-		manaProgressBar.setProgress(unit.getCurrentMana());
-		manaProgressBar.setCaption(unit.getCurrentMana() + " / " + unit.getMaxMana());
+		manaProgressBar.setMaxProgress(unitHealthComponent.getMaxMana());
+		manaProgressBar.setProgress(unitHealthComponent.getCurrentMana());
+		manaProgressBar.setCaption(unitHealthComponent.getCurrentMana() + " / " + unitHealthComponent.getMaxMana());
 	}
 
 }

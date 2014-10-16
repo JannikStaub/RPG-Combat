@@ -1,8 +1,8 @@
 package com.kingsaiya.game.combat.skill.condition;
 
-import com.kingsaiya.game.combat.unit.Unit;
+import com.kingsaiya.framework.entitysystem.entity.Entity;
 
 public interface ISkillConditionType {
 
-	public boolean isPossible(Unit controlledUnit, Unit focusTarget);
+	public boolean isPossible(Entity controlledUnit, Entity focusTarget);
 }

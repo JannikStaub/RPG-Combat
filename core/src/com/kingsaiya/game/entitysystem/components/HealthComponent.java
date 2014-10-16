@@ -7,6 +7,9 @@ public class HealthComponent extends AbstractEntityComponent {
 	private int maxHitpoints = 100;
 	private int currentHitpoints = maxHitpoints;
 
+	private int maxMana = 100;
+	private int currentMana = maxHitpoints;
+
 	private int maxEndurance = 100;
 	private int currentEndurance = maxHitpoints;
 
@@ -24,6 +27,22 @@ public class HealthComponent extends AbstractEntityComponent {
 
 	public int getCurrentHitpoints() {
 		return currentHitpoints;
+	}
+
+	public void adjustCurrentMana(int change) {
+		currentMana = Math.max(0, Math.min(currentMana + change, maxMana));
+	}
+
+	public void setCurrentMana(int currentMana) {
+		this.currentMana = currentMana;
+	}
+
+	public int getMaxMana() {
+		return maxMana;
+	}
+
+	public int getCurrentMana() {
+		return currentMana;
 	}
 
 	public void adjustCurrentEndurance(int change) {

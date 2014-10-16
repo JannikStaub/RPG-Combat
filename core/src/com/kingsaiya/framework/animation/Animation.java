@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import com.pixelmen.game.animation.AnimationStep;
+
 public class Animation<T extends AnimationStep> implements Externalizable {
 	private int lengthInFrames;
 

@@ -2,7 +2,7 @@ package com.kingsaiya.framework.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
-import com.kingsaiya.game.combat.dummy.Vector2f;
+import com.kingsaiya.framework.tools.Vector2f;
 
 public class GameCamera extends OrthographicCamera {
 	// cached variables for performance
@@ -10,7 +10,7 @@ public class GameCamera extends OrthographicCamera {
 	private Rectangle worldViewBounds = new Rectangle();
 
 	public GameCamera(final float viewportWidth, final float viewportHeight) {
-		setToOrtho(true, viewportWidth, viewportHeight);
+		setToOrtho(false, viewportWidth, viewportHeight);
 		super.update();
 	}
 

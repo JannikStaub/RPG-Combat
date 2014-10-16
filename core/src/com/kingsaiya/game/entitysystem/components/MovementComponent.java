@@ -1,9 +1,9 @@
 package com.kingsaiya.game.entitysystem.components;
 
 import com.kingsaiya.framework.entitysystem.entity.AbstractEntityComponent;
-import com.kingsaiya.game.combat.dummy.FastMath;
-import com.kingsaiya.game.combat.dummy.TimeTool;
-import com.kingsaiya.game.combat.dummy.Vector2f;
+import com.kingsaiya.framework.tools.FastMath;
+import com.kingsaiya.framework.tools.TimeTool;
+import com.kingsaiya.framework.tools.Vector2f;
 import com.kingsaiya.game.entitysystem.components.AnimationComponent.AnimationDirection;
 
 public class MovementComponent extends AbstractEntityComponent {

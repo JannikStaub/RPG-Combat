@@ -1,4 +1,4 @@
-package com.kingsaiya.framework.animation;
+package com.pixelmen.game.animation;
 
 import java.io.Externalizable;
 

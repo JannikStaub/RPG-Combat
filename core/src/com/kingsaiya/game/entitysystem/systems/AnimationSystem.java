@@ -12,14 +12,14 @@ import com.kingsaiya.framework.entitysystem.system.AbstractEntitySystem;
 import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationHandler;
 import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationStep;
 import com.kingsaiya.framework.tools.FileTool;
-import com.kingsaiya.game.combat.dummy.TimeTool;
+import com.kingsaiya.framework.tools.TimeTool;
 import com.kingsaiya.game.entitysystem.components.AnimationComponent;
 import com.kingsaiya.game.entitysystem.components.MovementComponent;
 import com.kingsaiya.game.entitysystem.events.AttackEvent;
-import com.kingsaiya.game.entitysystem.events.EventEntityDiedEvent;
-import com.kingsaiya.game.entitysystem.events.MovementEventAtTargetPosition;
-import com.kingsaiya.game.entitysystem.events.MovementEventDirectControl;
-import com.kingsaiya.game.entitysystem.events.MovementEventNewTargetPosition;
+import com.kingsaiya.game.entitysystem.events.entity.EventEntityDiedEvent;
+import com.kingsaiya.game.entitysystem.events.movement.MovementEventAtTargetPosition;
+import com.kingsaiya.game.entitysystem.events.movement.MovementEventDirectControl;
+import com.kingsaiya.game.entitysystem.events.movement.MovementEventNewTargetPosition;
 
 public class AnimationSystem extends AbstractEntitySystem {
 
@@ -72,21 +72,12 @@ public class AnimationSystem extends AbstractEntitySystem {
 					if (!movementComponent.isMovementBlocked(TimeTool.getGameTick())) {
 						final String animationDirection = getAnimationDirectionString(event.getEntity());
 
+						boolean hasMovement = event.isWalkUp() || event.isWalkLeft() || event.isWalkRight() || event.isWalkDown();
 						Animation<SkeletonAnimationStep> animation;
-						if (Math.abs(event.getForwardMotion()) > Math.abs(event.getStrafeMotion() * 0.5)) {
-							if (event.getForwardMotion() > 0.1) {
-								animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_walk_01_" + animationDirection + ".anim");
-							} else if (event.getForwardMotion() < 0.1) {
-								animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_walkbackwards_01_" + animationDirection + ".anim");
-							} else {
-								animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_stand_01_" + animationDirection + ".anim");
-							}
+						if (hasMovement) {
+							animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_walk_01_" + animationDirection + ".anim");
 						} else {
-							if (Math.abs(event.getStrafeMotion()) > 0.1) {
-								animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_strafe_01_" + animationDirection + ".anim");
-							} else {
-								animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_stand_01_" + animationDirection + ".anim");
-							}
+							animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_stand_01_" + animationDirection + ".anim");
 						}
 
 						final SkeletonAnimationHandler skeletonAnimationHandler = (SkeletonAnimationHandler) animationComponent.getAnimationHandler();
@@ -131,7 +122,7 @@ public class AnimationSystem extends AbstractEntitySystem {
 			return loadedAnimations.get(filePath);
 		}
 
-		final Animation<SkeletonAnimationStep> animation = FileTool.loadExternalExtenalizableFile(Gdx.files.absolute(filePath).file(), Animation.class);
+		final Animation<SkeletonAnimationStep> animation = FileTool.loadExternalExtenalizableFile(Gdx.files.internal(filePath), Animation.class);
 		if (animation != null) {
 			loadedAnimations.put(filePath, animation);
 		} else {

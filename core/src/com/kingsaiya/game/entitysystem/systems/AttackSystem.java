@@ -6,15 +6,15 @@ import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.entitysystem.eventsystem.AbstractEventListener;
 import com.kingsaiya.framework.entitysystem.eventsystem.EntityEventSystem;
 import com.kingsaiya.framework.entitysystem.system.AbstractEntitySystem;
-import com.kingsaiya.game.combat.dummy.FastMath;
-import com.kingsaiya.game.combat.dummy.Vector2f;
+import com.kingsaiya.framework.tools.FastMath;
+import com.kingsaiya.framework.tools.Vector2f;
 import com.kingsaiya.game.entitysystem.components.FactionComponent;
 import com.kingsaiya.game.entitysystem.components.HealthComponent;
 import com.kingsaiya.game.entitysystem.components.MovementComponent;
 import com.kingsaiya.game.entitysystem.events.AttackEvent;
 import com.kingsaiya.game.entitysystem.events.EventDamageTaken;
 import com.kingsaiya.game.entitysystem.events.EventEnduranceChanged;
-import com.kingsaiya.game.entitysystem.events.EventEntityDiedEvent;
+import com.kingsaiya.game.entitysystem.events.entity.EventEntityDiedEvent;
 
 public class AttackSystem extends AbstractEntitySystem {
 

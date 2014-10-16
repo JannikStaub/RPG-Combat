@@ -2,6 +2,7 @@ package com.kingsaiya.game.entitysystem.events;
 
 import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.entitysystem.eventsystem.EntityEvent;
+import com.kingsaiya.framework.tools.TimeTool;
 
 public class AttackEvent extends EntityEvent {
 
@@ -14,7 +15,7 @@ public class AttackEvent extends EntityEvent {
 		this.entity = entity;
 		this.damage = damage;
 		this.attackDurationInGameTicks = attackDurationInGameTicks;
-		this.attackStart = System.currentTimeMillis();
+		this.attackStart = TimeTool.getGameTick();
 	}
 
 }

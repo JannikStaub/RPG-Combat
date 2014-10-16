@@ -1,9 +1,9 @@
 package com.kingsaiya.game.combat.skill.effect;
 
-import com.kingsaiya.game.combat.unit.Unit;
+import com.kingsaiya.framework.entitysystem.entity.Entity;
 
 public interface ISkillEffectType {
 
-	public void execute(Unit controlledUnit, Unit focusTarget);
+	public void execute(Entity controlledUnit, Entity focusTarget);
 
 }

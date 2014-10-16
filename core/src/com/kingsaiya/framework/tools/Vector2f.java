@@ -30,7 +30,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.kingsaiya.game.combat.dummy;
+package com.kingsaiya.framework.tools;
 
 public class Vector2f
 {

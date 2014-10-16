@@ -4,19 +4,27 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
+import com.kingsaiya.framework.animation.Animation;
 import com.kingsaiya.framework.camera.GameCamera;
 import com.kingsaiya.framework.entitysystem.eventsystem.EntityEventSystem;
+import com.kingsaiya.framework.entitysystem.eventsystem.EntityInitializedEvent;
+import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationStep;
+import com.kingsaiya.framework.tools.FileTool;
 import com.kingsaiya.framework.tools.RenderTool;
+import com.kingsaiya.framework.tools.TimeTool;
 import com.kingsaiya.framework.userinterface.core.UserInterface;
-import com.kingsaiya.game.combat.dummy.TimeTool;
-import com.kingsaiya.game.combat.unit.Unit;
+import com.kingsaiya.game.entitysystem.components.CombatComponent;
+import com.kingsaiya.game.entitysystem.components.MovementComponent;
+import com.kingsaiya.game.entitysystem.entitys.Man;
 import com.kingsaiya.game.entitysystem.systems.AnimationSystem;
+import com.kingsaiya.game.entitysystem.systems.CombatSystem;
 import com.kingsaiya.game.entitysystem.systems.MovementSystem;
 import com.kingsaiya.game.input.MyInputProcessor;
 import com.kingsaiya.game.map.GameMap;
@@ -36,10 +44,11 @@ public class RpgCombatGame extends ApplicationAdapter {
 	private final EntityEventSystem eventSystem = new EntityEventSystem();
 	private final MovementSystem movementSystem = new MovementSystem(eventSystem);
 	private final AnimationSystem animationSystem = new AnimationSystem(eventSystem);
+	private final CombatSystem combatSystem = new CombatSystem(eventSystem);
 
 	private final GameMap gameMap = new GameMap(20, 15);
-	private final Unit player = new Unit();
-	private final Unit enemy = new Unit();
+	private Man player;
+	private Man enemy;
 
 	private MyInputProcessor inputProcessor;
 
@@ -53,18 +62,39 @@ public class RpgCombatGame extends ApplicationAdapter {
 		shapeRenderer = new ShapeRenderer();
 		spriteBatch = new SpriteBatch();
 		camera = new GameCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		uiProjectionMatrix = new Matrix4(camera.combined);
+		OrthographicCamera uiCamera = new OrthographicCamera();
+		uiCamera.setToOrtho(true, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		uiProjectionMatrix = new Matrix4(uiCamera.combined);
 
-		inputProcessor = new MyInputProcessor();
+		movementSystem.setGameMap(gameMap);
+
+		initializeEntities();
+
+		inputProcessor = new MyInputProcessor(eventSystem);
 		inputProcessor.setUserInterface(userInterface);
 		inputProcessor.setGameMap(gameMap);
 		inputProcessor.setControlledUnit(player);
 		Gdx.input.setInputProcessor(inputProcessor);
 
-		player.getPosition().set(10, 8);
-		enemy.getPosition().set(10, 12);
-		player.setFocusTarget(enemy);
+		initializeUserInterface();
+	}
 
+	private void initializeEntities() {
+		Animation<SkeletonAnimationStep> baseAnimation = FileTool.loadExternalExtenalizableFile(
+				Gdx.files.internal(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_stand_01_south.anim"), Animation.class);
+
+		player = new Man(new Texture(Gdx.files.internal("man.png")), baseAnimation);
+		eventSystem.executeEvent(new EntityInitializedEvent(player));
+		player.getEntityComponent(MovementComponent.class).getPosition().set(10, 8);
+
+		enemy = new Man(new Texture(Gdx.files.internal("man2.png")), baseAnimation);
+		eventSystem.dropEvent(new EntityInitializedEvent(enemy));
+		enemy.getEntityComponent(MovementComponent.class).getPosition().set(10, 12);
+
+		player.getEntityComponent(CombatComponent.class).setFocusTarget(enemy);
+	}
+
+	private void initializeUserInterface() {
 		userInterface.addUIComponent(new UIWindow("testWindow", 100, 100, 300, 200, userInterface));
 		for (int slot = 0; slot < 6; slot++) {
 			final int x = (Gdx.graphics.getWidth() - 6 * 66) / 2;
@@ -86,18 +116,17 @@ public class RpgCombatGame extends ApplicationAdapter {
 	public void render() {
 		inputProcessor.update();
 
-		player.update();
-		enemy.update();
-
 		eventSystem.update();
 		movementSystem.update();
 		animationSystem.update();
+		combatSystem.update();
 
 		Gdx.gl.glClearColor(inputProcessor.isAdjustControlsMode() ? 0.1f : 0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 
-		camera.setPosition(player.getPosition().x * 32, player.getPosition().y * 32);
+		MovementComponent movementComponent = player.getEntityComponent(MovementComponent.class);
+		camera.setPosition(movementComponent.getPosition().x * 32, movementComponent.getPosition().y * 32);
 		camera.update();
 
 		shapeRenderer.setProjectionMatrix(camera.combined);
@@ -113,11 +142,11 @@ public class RpgCombatGame extends ApplicationAdapter {
 				shapeRenderer.rect(x * 32, y * 32, 32, 32);
 			}
 		}
-
-		drawUnit(enemy, Color.RED);
-		drawUnit(player, Color.BLUE);
-
 		shapeRenderer.end();
+
+		spriteBatch.setProjectionMatrix(camera.combined);
+		enemy.render(spriteBatch, shapeRenderer);
+		player.render(spriteBatch, shapeRenderer);
 
 		// shapeRenderer.begin(ShapeType.Line);
 		// shapeRenderer.setColor(Color.GREEN);
@@ -155,22 +184,4 @@ public class RpgCombatGame extends ApplicationAdapter {
 		TimeTool.increaseGameTick();
 	}
 
-	private void drawUnit(final Unit unit, Color color) {
-		if (unit == player.getFocusTarget()) {
-			shapeRenderer.setColor(1, 1, 1, 0.5f);
-			shapeRenderer.setColor(Color.GREEN);
-			shapeRenderer.circle(unit.getPosition().x * 32, unit.getPosition().y * 32, 12);
-			shapeRenderer.setColor(1, 1, 1, 1);
-		}
-
-		shapeRenderer.setColor(Color.BLACK);
-		shapeRenderer.circle(unit.getPosition().x * 32, unit.getPosition().y * 32, 10);
-
-		if (unit.getCurrentHitpoints() > 0) {
-			shapeRenderer.setColor(color);
-		} else {
-			shapeRenderer.setColor(Color.GRAY);
-		}
-		shapeRenderer.circle(unit.getPosition().x * 32, unit.getPosition().y * 32, 9);
-	}
 }

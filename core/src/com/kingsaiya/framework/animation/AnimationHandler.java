@@ -2,6 +2,8 @@ package com.kingsaiya.framework.animation;
 
 import java.util.ArrayList;
 
+import com.pixelmen.game.animation.AnimationStep;
+
 public abstract class AnimationHandler<T extends AnimationStep> {
 
 	private Animation<T> animation;

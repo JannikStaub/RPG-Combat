@@ -1,4 +1,4 @@
-package com.kingsaiya.game.combat.dummy;
+package com.kingsaiya.framework.tools;
 
 public class TimeTool {
 
