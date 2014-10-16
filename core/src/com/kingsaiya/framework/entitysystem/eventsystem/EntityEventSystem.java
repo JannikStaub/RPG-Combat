@@ -2,6 +2,7 @@ package com.kingsaiya.framework.entitysystem.eventsystem;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("rawtypes")
 public class EntityEventSystem {
 
 	private final ArrayList<AbstractEventListener> registeredListeners = new ArrayList<AbstractEventListener>();

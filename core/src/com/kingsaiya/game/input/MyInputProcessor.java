@@ -7,7 +7,6 @@ import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.entitysystem.eventsystem.EntityEventSystem;
 import com.kingsaiya.framework.userinterface.core.UserInterface;
 import com.kingsaiya.game.entitysystem.events.movement.MovementEventDirectControl;
-import com.kingsaiya.game.map.GameMap;
 
 public class MyInputProcessor implements InputProcessor {
 
@@ -17,7 +16,6 @@ public class MyInputProcessor implements InputProcessor {
 
 	private UserInterface userInterface;
 	private EntityEventSystem eventSystem;
-	private GameMap gameMap;
 	private Entity controlledUnit;
 
 	// keys
@@ -185,10 +183,6 @@ public class MyInputProcessor implements InputProcessor {
 
 	public void setUserInterface(UserInterface userInterface) {
 		this.userInterface = userInterface;
-	}
-
-	public void setGameMap(GameMap gameMap) {
-		this.gameMap = gameMap;
 	}
 
 	public void setControlledUnit(Entity controlledUnit) {

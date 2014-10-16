@@ -7,6 +7,7 @@ public abstract class AbstractEventListener<T extends EntityEvent> {
 
 	private Type t = ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
+	@SuppressWarnings("unchecked")
 	public final void handleEvent(final EntityEvent event) {
 		if (t == event.getClass()) {
 			onEvent((T) event);

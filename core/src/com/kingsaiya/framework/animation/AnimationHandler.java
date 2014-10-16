@@ -11,10 +11,6 @@ public abstract class AnimationHandler<T extends AnimationStep> {
 	private boolean loop = false;
 	private int currentFrame = 0;
 
-	public AnimationHandler(final Animation<T> animation) {
-		this.animation = animation;
-	}
-
 	public void restart() {
 		currentFrame = 0;
 	}

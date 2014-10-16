@@ -4,15 +4,13 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
-import com.kingsaiya.framework.animation.Animation;
 import com.kingsaiya.framework.animation.AnimationHandler;
 
 public class SkeletonAnimationHandler extends AnimationHandler<SkeletonAnimationStep> {
 
 	private Skeleton skeleton;
 
-	public SkeletonAnimationHandler(Animation<SkeletonAnimationStep> animation, final Skeleton skeleton) {
-		super(animation);
+	public SkeletonAnimationHandler(final Skeleton skeleton) {
 		this.skeleton = skeleton;
 	}
 

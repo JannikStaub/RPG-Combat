@@ -5,11 +5,9 @@ import java.util.HashMap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.kingsaiya.framework.animation.Animation;
 import com.kingsaiya.framework.entitysystem.entity.AbstractEntityComponent;
 import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationHandler;
-import com.kingsaiya.framework.pixelman.skeleton.SkeletonAnimationStep;
 import com.kingsaiya.game.entitysystem.components.AnimationComponent;
 import com.kingsaiya.game.entitysystem.components.CombatComponent;
 import com.kingsaiya.game.entitysystem.components.FactionComponent;
@@ -27,11 +25,9 @@ public class Man extends Entity {
 	private CombatComponent combatComponent;
 
 	private Texture texture;
-	private Animation<SkeletonAnimationStep> animation;
 
-	public Man(final Texture texture, final Animation<SkeletonAnimationStep> animation) {
+	public Man(final Texture texture) {
 		this.texture = texture;
-		this.animation = animation;
 	}
 
 	public void render(final SpriteBatch spriteBatch, final ShapeRenderer shapeRenderer) {
@@ -43,7 +39,7 @@ public class Man extends Entity {
 	protected void registerEntityComponents(HashMap<Class<? extends AbstractEntityComponent>, AbstractEntityComponent> components) {
 		skeletonComponent = new SkeletonComponent(texture);
 		components.put(SkeletonComponent.class, skeletonComponent);
-		animationComponent = new AnimationComponent(new SkeletonAnimationHandler(animation, skeletonComponent.getSkeleton()));
+		animationComponent = new AnimationComponent(new SkeletonAnimationHandler(skeletonComponent.getSkeleton()));
 		components.put(AnimationComponent.class, animationComponent);
 		healthComponent = new HealthComponent();
 		components.put(HealthComponent.class, healthComponent);

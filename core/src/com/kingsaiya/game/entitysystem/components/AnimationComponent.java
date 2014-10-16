@@ -3,6 +3,7 @@ package com.kingsaiya.game.entitysystem.components;
 import com.kingsaiya.framework.animation.AnimationHandler;
 import com.kingsaiya.framework.entitysystem.entity.AbstractEntityComponent;
 
+@SuppressWarnings("rawtypes")
 public class AnimationComponent extends AbstractEntityComponent {
 
 	private AnimationHandler animationHandler;

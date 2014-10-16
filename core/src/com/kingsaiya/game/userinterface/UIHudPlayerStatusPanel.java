@@ -12,7 +12,6 @@ public class UIHudPlayerStatusPanel extends AbstractUIComponent {
 
 	private UIProgressbar healthProgressBar;
 	private UIProgressbar manaProgressBar;
-	private Entity unit;
 	private HealthComponent unitHealthComponent;
 
 	public UIHudPlayerStatusPanel(String widgetname, float x, float y, float width, float height) {
@@ -26,7 +25,6 @@ public class UIHudPlayerStatusPanel extends AbstractUIComponent {
 	}
 
 	public void setUnit(final Entity unit) {
-		this.unit = unit;
 		if (unit != null) {
 			unitHealthComponent = unit.getEntityComponent(HealthComponent.class);
 		} else {
@@ -37,10 +35,8 @@ public class UIHudPlayerStatusPanel extends AbstractUIComponent {
 	@Override
 	public void render(SpriteBatch spriteBatch, float offsetX, float offsetY) {
 		spriteBatch.setColor(1, 1, 1, 0.8f);
-		RenderTool
-				.renderNinePatch(RenderTool.getUITexture(), 32, 32, 32, 32, 9, 9, 9, 9, x + offsetX, y + offsetY + 1, 50, 19, spriteBatch);
-		RenderTool.renderNinePatch(RenderTool.getUITexture(), 32, 32, 32, 32, 9, 9, 9, 9, x + offsetX, y + offsetY + 21, 50, 19,
-				spriteBatch);
+		RenderTool.renderNinePatch(RenderTool.getUITexture(), 32, 32, 32, 32, 9, 9, 9, 9, x + offsetX, y + offsetY + 1, 50, 19, spriteBatch);
+		RenderTool.renderNinePatch(RenderTool.getUITexture(), 32, 32, 32, 32, 9, 9, 9, 9, x + offsetX, y + offsetY + 21, 50, 19, spriteBatch);
 		spriteBatch.setColor(1, 1, 1, 1f);
 
 		RenderTool.renderTextVerticalCentered("HP:", x + offsetX + 5, y + offsetY, 1f, Color.WHITE, 20, spriteBatch);

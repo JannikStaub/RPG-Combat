@@ -13,8 +13,9 @@ public class UIInventoryButton extends AbstractUIComponent {
 
 	@Override
 	protected void render(SpriteBatch spriteBatch, float offsetX, float offsetY) {
-		RenderTool.renderNinePatch(RenderTool.getUITexture(), 64, 0, 28, 28, 2, 2, 2, 2, x + offsetX, y + offsetY, width, height,
-				spriteBatch);
+		RenderTool.renderNinePatch(RenderTool.getUITexture(), 32, 16, 32, 16, 2, 2, 2, 2, x + offsetX, y + offsetY, width, height, spriteBatch);
+		RenderTool.renderNinePatch(RenderTool.getUITexture(), 93, 0, 25, 19, 0, 0, 0, 0, x + offsetX + (width - 25) / 2, y + offsetY + (height - 19) / 2, 25,
+				19, spriteBatch);
 
 	}
 

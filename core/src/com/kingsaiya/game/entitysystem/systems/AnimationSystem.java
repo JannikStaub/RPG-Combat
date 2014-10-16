@@ -50,17 +50,9 @@ public class AnimationSystem extends AbstractEntitySystem {
 		eventSystem.registerListener(new AbstractEventListener<MovementEventAtTargetPosition>() {
 			@Override
 			protected void onEvent(final MovementEventAtTargetPosition event) {
-				final AnimationComponent animationComponent = event.getEntity().getEntityComponent(AnimationComponent.class);
-				if (animationComponent != null) {
-					final String animationDirection = getAnimationDirectionString(event.getEntity());
-					final Animation<SkeletonAnimationStep> walk_animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_stand_01_"
-							+ animationDirection + ".anim");
-					final SkeletonAnimationHandler skeletonAnimationHandler = (SkeletonAnimationHandler) animationComponent.getAnimationHandler();
-					skeletonAnimationHandler.setLoop(true);
-					skeletonAnimationHandler.setAnimation(walk_animation);
-					System.out.println("set stand animation");
-				}
+				setStandingAnimation(event.getEntity());
 			}
+
 		});
 
 		eventSystem.registerListener(new AbstractEventListener<MovementEventDirectControl>() {
@@ -122,6 +114,7 @@ public class AnimationSystem extends AbstractEntitySystem {
 			return loadedAnimations.get(filePath);
 		}
 
+		@SuppressWarnings("unchecked")
 		final Animation<SkeletonAnimationStep> animation = FileTool.loadExternalExtenalizableFile(Gdx.files.internal(filePath), Animation.class);
 		if (animation != null) {
 			loadedAnimations.put(filePath, animation);
@@ -129,6 +122,19 @@ public class AnimationSystem extends AbstractEntitySystem {
 			System.out.println("Animation not found " + filePath);
 		}
 		return animation;
+	}
+
+	private void setStandingAnimation(Entity entity) {
+		final AnimationComponent animationComponent = entity.getEntityComponent(AnimationComponent.class);
+		if (animationComponent != null) {
+			final String animationDirection = getAnimationDirectionString(entity);
+			final Animation<SkeletonAnimationStep> walk_animation = getAnimation(FileTool.ABSOLUTE_ANIMATIONS_PATH + "human_stand_01_" + animationDirection
+					+ ".anim");
+			final SkeletonAnimationHandler skeletonAnimationHandler = (SkeletonAnimationHandler) animationComponent.getAnimationHandler();
+			skeletonAnimationHandler.setLoop(true);
+			skeletonAnimationHandler.setAnimation(walk_animation);
+			System.out.println("set stand animation");
+		}
 	}
 
 	private String getAnimationDirectionString(final Entity entity) {
@@ -144,6 +150,7 @@ public class AnimationSystem extends AbstractEntitySystem {
 		final AnimationComponent animationComponent = entity.getEntityComponent(AnimationComponent.class);
 		if (animationComponent != null) {
 			entitys.add(entity);
+			setStandingAnimation(entity);
 		}
 	}
 

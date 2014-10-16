@@ -7,7 +7,6 @@ import com.kingsaiya.framework.entitysystem.entity.Entity;
 import com.kingsaiya.framework.entitysystem.eventsystem.AbstractEventListener;
 import com.kingsaiya.framework.entitysystem.eventsystem.EntityEventSystem;
 import com.kingsaiya.framework.entitysystem.system.AbstractEntitySystem;
-import com.kingsaiya.framework.tools.FastMath;
 import com.kingsaiya.framework.tools.Vector2f;
 import com.kingsaiya.game.entitysystem.components.MovementComponent;
 import com.kingsaiya.game.entitysystem.events.movement.MovementEventAtTargetPosition;
@@ -30,20 +29,6 @@ public class MovementSystem extends AbstractEntitySystem {
 				final MovementComponent movementComponent = event.getEntity().getEntityComponent(MovementComponent.class);
 				if (movementComponent != null) {
 					movementComponent.setTargetPosition(event.getX(), event.getY());
-				}
-			}
-		});
-
-		eventSystem.registerListener(new AbstractEventListener<MovementEventAtTargetPosition>() {
-			@Override
-			protected void onEvent(MovementEventAtTargetPosition event) {
-				final MovementComponent movementComponent = event.getEntity().getEntityComponent(MovementComponent.class);
-				if (movementComponent != null) {
-					float movementX = FastMath.rand.nextFloat() * 200 - 100f;
-					float movementY = FastMath.rand.nextFloat() * 200 - 100f;
-					if (movementX == 0 && movementY == 0) {
-						System.out.println("no movement");
-					}
 				}
 			}
 		});

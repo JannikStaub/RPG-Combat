@@ -112,7 +112,7 @@ public class Skeleton {
 		// draw stuff
 		spriteBatch.begin();
 		int zIndex = -5;
-		while (renderBoneWithChilds(rootNode, position.x * 32, position.y * 32, zIndex, 3, spriteBatch)) {
+		while (renderBoneWithChilds(rootNode, position.x * 32, position.y * 32 + 18, zIndex, 3, spriteBatch)) {
 			zIndex++;
 		}
 		spriteBatch.end();
